@@ -1,0 +1,10 @@
+applications:
+- path: target/JavaDBApp.war
+  memory: 512M
+  instances: 1
+  domain: mybluemix.net
+  name: myjavasql
+  host: myjavasql
+  disk_quota: 1024M
+  services:
+  - myjavasql-sqldb
