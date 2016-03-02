@@ -50,7 +50,8 @@ public class CaseResource {
 			@FormDataParam("file1") InputStream file1,
 			@FormDataParam("file2") InputStream file2,
 			@FormDataParam("file3") InputStream file3) throws IOException {
-
+		if(patientId!=null)
+		{
 		Case caseObj = new Case();
 		caseObj.setDoctorId(doctorId.intValue());
 		caseObj.setPatientId(patientId.intValue());
@@ -140,6 +141,10 @@ public class CaseResource {
 		// Save the file
 
 		return Response.ok(caseObj.toString()).build();
+	}
+	else
+	return Response.status(javax.ws.rs.core.Response.Status.ACCEPTED).build();
+
 		
 	}
 	
