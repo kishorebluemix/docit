@@ -1,5 +1,7 @@
 package example.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -16,9 +18,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.IOUtils;
+
 import com.sun.jersey.multipart.FormDataParam;
 
 import example.jpa.Patient;
+
 
 @Path("/Patient")
 public class PatientResource {
@@ -33,7 +38,7 @@ public class PatientResource {
 	@POST
 	@Path("/add")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response addUser(@FormDataParam("patientId") Long patientId,
+	public Response addUser(
 			@FormDataParam("patName") String patName,
 			@FormDataParam("patDOB") Date patDOB,
 			@FormDataParam("patSex") String patSex,
@@ -42,10 +47,10 @@ public class PatientResource {
 			@FormDataParam("patEmail") String patEmail,
 			@FormDataParam("Isdaibetic") String Isdaibetic,
 			@FormDataParam("bloodpressure") String bloodpressure,
-			@FormDataParam("allergies") String allergies) {
+			@FormDataParam("allergies") String allergies,
+			@FormDataParam("file") InputStream file) {
 
 		Patient PatientObj = new Patient();
-		PatientObj.setId(patientId);
 		PatientObj.setPatName(patName);
 		PatientObj.setPatDOB(patDOB);
 		PatientObj.setPatSex(patSex);
@@ -58,6 +63,12 @@ public class PatientResource {
 		// PatientObj.setDoctorId(doctorId);
 		try {
 			utx.begin();
+			if (file != null) {
+				byte[] bytes = IOUtils.toByteArray(file );
+				
+				PatientObj.setFile(bytes);
+				System.out.println("file size is " +bytes.length);
+			}
 			em.persist(PatientObj);
 			utx.commit();
 
@@ -87,26 +98,40 @@ public class PatientResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Object get(@QueryParam("patientId") Long patientId) {
-
-		if (patientId == null) {
-			List<Patient> list = em.createQuery("SELECT p FROM Patient p",
+	public Object get(@QueryParam("patientId") Long patientId, @QueryParam("patEmail") String patEmail) {
+		List<Patient> patients = null;
+		if (patientId == null && patEmail == null) {
+			 patients = em.createQuery("SELECT p FROM Patient p",
 					Patient.class).getResultList();
 			// TODO use JSON util like Gson to render objects and use REST
 			// Response Writer
-			String json = "{\"id\":\"all\", \"body\":" + list.toString() + "}";
-			return list;
+			String json = "{\"id\":\"all\", \"body\":" + patients.toString() + "}";
+			return patients;
 		}
-		Patient patientObj = null;
 		try {
 			utx.begin();
-			patientObj = em.find(Patient.class, patientId);
+			String queryString = "SELECT t FROM Patient t where ";
+			boolean paramAppended = false;
+			if (patientId != null) {
+				queryString += "t.id =" + patientId;
+				paramAppended = true;
+			}
+			if (patEmail != null && !"".equals(patEmail)) {
+				
+				if (paramAppended) {
+					queryString += " and t.patEmail ='" + patEmail +"'";
+				} else {
+					queryString += "t.patEmail ='" + patEmail +"'";
+				}
+				paramAppended = true;
+			}
+			
+			
+			patients = em.createQuery(queryString, Patient.class).getResultList();
 			utx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(
-					javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
-					.build();
+			return Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			try {
 				if (utx.getStatus() == javax.transaction.Status.STATUS_ACTIVE) {
@@ -116,13 +141,51 @@ public class PatientResource {
 				e.printStackTrace();
 			}
 		}
-		if (patientObj != null)
-			return patientObj;
+		if (patients != null)
+		return patients;
 		else
-			return Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND)
-					.build();
+		return Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
 	}
 
+	
+	@GET
+	@Path("/image")
+	@Produces("image/png")
+	public Response getFullImage(@QueryParam("patientId") Long patientId) {
+
+		Patient patient = null;
+		try {
+			utx.begin();
+			patient = em.find(Patient.class, patientId);
+
+
+			utx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				if (utx.getStatus() == javax.transaction.Status.STATUS_ACTIVE) {
+					utx.rollback();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (patient != null)
+			return Response.ok(new ByteArrayInputStream(patient.getFile())).build();
+		else
+			return Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
+
+	    
+
+	    // uncomment line below to send non-streamed
+	    // return Response.ok(imageData).build();
+
+	    // uncomment line below to send streamed
+	     
+	}
+	
 	private UserTransaction getUserTransaction() {
 		InitialContext ic;
 		try {

@@ -8,7 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "Patient")
@@ -16,10 +19,6 @@ import javax.persistence.Table;
  * define O-R mapping of todolist table
  */
 public class Patient {
-
-
-
-
 
 
 
@@ -43,18 +42,18 @@ public class Patient {
 	 
 	
 	@Basic
-	@Column(name = " PAT_ADDRESS")
+	@Column(name = "PAT_ADDRESS")
 	private String patAddress;
 	
 	
 	
 	@Basic
-	@Column(name = " PAT_PHONE")
+	@Column(name = "PAT_PHONE")
 	private Integer patPhone ;
 	 
 	
 	@Basic
-	@Column(name = " PAT_EMAIL")
+	@Column(name = "PAT_EMAIL")
 	private String patEmail;
 	
 	
@@ -72,6 +71,22 @@ public class Patient {
 	@Column(name = "ALLERGIES ")
 	private String allergies;
 	
+	@JsonIgnore
+	@Lob
+	@Column( name = "FILE" )
+	private byte[] file;
+
+	public byte[] getFile() {
+		return file;
+	}
+
+
+
+	public void setFile(byte[] file) {
+		this.file = file;
+	}
+
+
 
 	public long getId() {
 		return id;

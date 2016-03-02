@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Lob;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 	@Entity
 	@Table(name = "Doctor")
 	/*
@@ -24,7 +26,7 @@ import javax.persistence.Lob;
 		@Id //primary key
 		@Column(name = "DOC_ID")
 		@GeneratedValue(strategy = GenerationType.AUTO)
-		private int id;
+		private long id;
 		
 		@Basic
 		@Column(name = "DOC_NM")
@@ -38,24 +40,25 @@ import javax.persistence.Lob;
 		
 		
 		@Basic
-		@Column(name = " DOC_CLINIC_ADDRESS")
+		@Column(name = "DOC_CLINIC_ADDRESS")
 		private String docClinicAddress;
 		
 		@Basic
-		@Column(name = " DOC_SEX")
+		@Column(name = "DOC_SEX")
 		private String docSex;
 		
+		@JsonIgnore
 		@Lob
 		@Column( name = "FILE" )
 		private byte[] file;
 		
 		@Basic
-		@Column(name = " DOC_PHONE")
+		@Column(name = "DOC_PHONE")
 		private String docPhone ;
 		 
 		
 		@Basic
-		@Column(name = " DOC_EMAIL")
+		@Column(name = "DOC_EMAIL")
 		private String docEmail;
 		
 		
@@ -65,7 +68,7 @@ import javax.persistence.Lob;
 		
 		
 		@Basic
-		@Column(name = "  DOC_EDU ")
+		@Column(name = "DOC_EDU ")
 		private String docEdu;
 		  
 		
@@ -81,13 +84,13 @@ import javax.persistence.Lob;
 		
 		
 		
-		public int getId() {
+		public long getId() {
 			return id;
 		}
 
 
 
-		public void setId(int id) {
+		public void setId(long id) {
 			this.id = id;
 		}
 

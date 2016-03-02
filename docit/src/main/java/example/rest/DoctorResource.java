@@ -1,5 +1,6 @@
 package example.rest;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
@@ -38,8 +39,7 @@ public class DoctorResource {
 	 @POST  
 	  @Path("/add")  
 	  @Consumes(MediaType.MULTIPART_FORM_DATA)
-	  public Response addUser(  
-	      @FormDataParam("doctorId") String doctorId,  
+	  public Response addDoctor(  
 	      @FormDataParam("docName") String   docName,  
 	      @FormDataParam("docDOB") Date docDOB,
 	      @FormDataParam("docSex") String docSex,
@@ -51,9 +51,7 @@ public class DoctorResource {
 	      @FormDataParam("docMajSpec") String docMajSpec,
 	      @FormDataParam("docHighlights") String docHighlights,
 	      @FormDataParam("file") InputStream file){  
-		  
 		 Doctor doctor = new Doctor();
-		 doctor.setId(Integer.parseInt(doctorId));
 		 doctor.setDocName(docName);
 		 doctor.setDocDOB(docDOB);
 		doctor.setDocSex(docSex);
@@ -100,9 +98,9 @@ public class DoctorResource {
 	 
 	 @GET
 		@Produces(MediaType.APPLICATION_JSON)
-		public Object get(@QueryParam("docId") Long	docId , @QueryParam("speciality") String speciality ) {
+		public Object get(@QueryParam("docId") Long	docId , @QueryParam("speciality") String speciality ,@QueryParam("docEmail") String docEmail) {
 		List<Doctor> doctors = null;
-			if (docId == null && speciality == null) {
+			if (docId == null && speciality == null && docEmail == null) {
 				doctors = em.createQuery("SELECT d FROM Doctor d", Doctor.class).getResultList();
 				//TODO use JSON util like Gson to render objects and use REST Response Writer
 
@@ -126,6 +124,17 @@ public class DoctorResource {
 					}
 					paramAppended = true;
 				}
+				
+				if (docEmail != null && !"".equals(docEmail)) {
+					
+					if (paramAppended) {
+						queryString += " and t.docEmail ='" + docEmail +"'";
+					} else {
+						queryString += "t.docEmail ='" + docEmail +"'";
+					}
+					paramAppended = true;
+				}
+				
 				doctors = em.createQuery(queryString, Doctor.class).getResultList();
 				utx.commit();
 			} catch (Exception e) {
@@ -155,6 +164,45 @@ public class DoctorResource {
 				e.printStackTrace();
 			}
 			return null;
+		}
+		
+
+		@GET
+		@Path("/image")
+		@Produces("image/png")
+		public Response getFullImage(@QueryParam("doctorId") Long doctorId) {
+
+			Doctor doctor = null;
+			try {
+				utx.begin();
+				doctor = em.find(Doctor.class, doctorId);
+
+
+				utx.commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).build();
+			} finally {
+				try {
+					if (utx.getStatus() == javax.transaction.Status.STATUS_ACTIVE) {
+						utx.rollback();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if (doctor != null)
+				return Response.ok(new ByteArrayInputStream(doctor.getFile())).build();
+			else
+				return Response.status(javax.ws.rs.core.Response.Status.NOT_FOUND).build();
+
+		    
+
+		    // uncomment line below to send non-streamed
+		    // return Response.ok(imageData).build();
+
+		    // uncomment line below to send streamed
+		     
 		}
 		
 		
