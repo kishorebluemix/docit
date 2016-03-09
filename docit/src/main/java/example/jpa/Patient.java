@@ -49,7 +49,7 @@ public class Patient {
 	
 	@Basic
 	@Column(name = "PAT_PHONE")
-	private Integer patPhone ;
+	private String patPhone ;
 	 
 	
 	@Basic
@@ -148,13 +148,13 @@ public class Patient {
 
 
 
-	public Integer getPatPhone() {
+	public String getPatPhone() {
 		return patPhone;
 	}
 
 
 
-	public void setPatPhone(Integer patPhone) {
+	public void setPatPhone(String patPhone) {
 		this.patPhone = patPhone;
 	}
 

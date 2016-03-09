@@ -43,7 +43,7 @@ public class PatientResource {
 			@FormDataParam("patDOB") Date patDOB,
 			@FormDataParam("patSex") String patSex,
 			@FormDataParam("patAddress") String patAddress,
-			@FormDataParam("patPhone") Integer patPhone,
+			@FormDataParam("patPhone") String patPhone,
 			@FormDataParam("patEmail") String patEmail,
 			@FormDataParam("Isdaibetic") String Isdaibetic,
 			@FormDataParam("bloodpressure") String bloodpressure,

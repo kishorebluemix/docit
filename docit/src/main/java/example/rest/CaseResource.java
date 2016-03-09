@@ -153,7 +153,7 @@ public class CaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 public Object updateCase(@FormDataParam("docComments") String docComments,
 				@FormDataParam("patientComments") String patientComments,
-				@FormDataParam("caseID") Long caseId)
+				@FormDataParam("caseID") Long caseId, @FormDataParam("status") String status)
 	{
 		try
 	{	Case caseo = null;
@@ -171,7 +171,11 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			{
 				caseo.setPatientComments(patientComments);
 			}
-		caseo.setCaseUpdationTS(new Date());
+			if(status != null && !"".equals(status))
+			{
+				caseo.setCaseStatus(status);
+			}
+			caseo.setCaseUpdationTS(new Date());
 			em.merge(caseo);
 		utx.commit();
 		}
