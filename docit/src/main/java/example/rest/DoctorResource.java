@@ -2,6 +2,8 @@ package example.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -39,9 +41,10 @@ public class DoctorResource {
 	 @POST  
 	  @Path("/add")  
 	  @Consumes(MediaType.MULTIPART_FORM_DATA)
+	 @Produces(MediaType.APPLICATION_JSON)
 	  public Response addDoctor(  
 	      @FormDataParam("docName") String   docName,  
-	      @FormDataParam("docDOB") Date docDOB,
+	     @FormDataParam("docDOB") String docDOB,
 	      @FormDataParam("docSex") String docSex,
 	      @FormDataParam("docClinicAddress") String docClinicAddress,
 	      @FormDataParam("docPhone") String docPhone,
@@ -50,10 +53,18 @@ public class DoctorResource {
 	      @FormDataParam("docEdu") String docEdu,
 	      @FormDataParam("docMajSpec") String docMajSpec,
 	      @FormDataParam("docHighlights") String docHighlights,
-	      @FormDataParam("file") InputStream file){  
+	      @FormDataParam("file") InputStream file,
+	      @FormDataParam("lattitude") String lattitude,
+	      @FormDataParam("longitude") String longitude){  
 		 Doctor doctor = new Doctor();
 		 doctor.setDocName(docName);
-		 doctor.setDocDOB(docDOB);
+		 SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
+		 
+		 try {
+			doctor.setDocDOB(format.parse(docDOB));
+		} catch (ParseException e1) {
+			
+		}
 		doctor.setDocSex(docSex);
 		 doctor.setDocClinicAddress(docClinicAddress);
 		 doctor.setDocPhone(docPhone);
@@ -62,6 +73,8 @@ public class DoctorResource {
 		 doctor.setDocEdu(docEdu);
 		 doctor.setDocMajSpec(docMajSpec);
 		 doctor.setDocHighlights(docHighlights);
+		 doctor.setLattitude(lattitude);
+		 doctor.setLongitude(longitude);
 	
 	try {
 				utx.begin();
@@ -91,7 +104,7 @@ public class DoctorResource {
 
 		 
 	 
-			return Response.ok(doctor.toString()).build();
+			return Response.ok(doctor).build();
 	  }  
 	 
 	 

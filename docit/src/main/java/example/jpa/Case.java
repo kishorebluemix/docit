@@ -67,7 +67,9 @@ public class Case {
 	@Column(name = "CASE_UPDATION_TS")
 	private Date caseUpdationTS;
 	
-  
+	@Basic
+	@Column(name = "APPOINTMENT_DT")
+	private Date appointmentDate;
 	
 
 	public long getId() {
@@ -177,5 +179,15 @@ public class Case {
 				+ caseName + ", docComments=" + docComments
 				+ ", patientComments=" + patientComments + ", caseStatus="
 				+ caseStatus + "";
+	}
+
+
+	public Date getAppointmentDate() {
+		return appointmentDate;
+	}
+
+
+	public void setAppointmentDate(Date appointmentDate) {
+		this.appointmentDate = appointmentDate;
 	}
 }

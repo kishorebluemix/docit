@@ -38,6 +38,7 @@ public class PatientResource {
 	@POST
 	@Path("/add")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addUser(
 			@FormDataParam("patName") String patName,
 			@FormDataParam("patDOB") Date patDOB,
@@ -45,20 +46,31 @@ public class PatientResource {
 			@FormDataParam("patAddress") String patAddress,
 			@FormDataParam("patPhone") String patPhone,
 			@FormDataParam("patEmail") String patEmail,
-			@FormDataParam("Isdaibetic") String Isdaibetic,
+			@FormDataParam("Isdaibetic") String isdaibetic,
 			@FormDataParam("bloodpressure") String bloodpressure,
 			@FormDataParam("allergies") String allergies,
 			@FormDataParam("file") InputStream file) {
 
-		Patient PatientObj = new Patient();
-		PatientObj.setPatName(patName);
-		PatientObj.setPatDOB(patDOB);
-		PatientObj.setPatSex(patSex);
-		PatientObj.setPatAddress(patAddress);
-		PatientObj.setPatPhone(patPhone);
-		PatientObj.setPatEmail(patEmail);
-		PatientObj.setIsdiabetic(false);
-		PatientObj.setHasBloodpressure(false);
+		Patient patient = new Patient();
+		patient.setPatName(patName);
+		patient.setPatDOB(patDOB);
+		patient.setPatSex(patSex);
+		patient.setPatAddress(patAddress);
+		patient.setPatPhone(patPhone);
+		patient.setPatEmail(patEmail);
+		if("true".equalsIgnoreCase(isdaibetic) || "yes".equalsIgnoreCase(isdaibetic)) {
+			patient.setIsdiabetic(true);	
+		} else {
+		patient.setIsdiabetic(false);
+		}
+		if("true".equalsIgnoreCase(bloodpressure) || "yes".equalsIgnoreCase(bloodpressure)) {
+			patient.setHasBloodpressure(true);
+		} else {
+		patient.setHasBloodpressure(false);
+		}
+		
+		patient.setAllergies(allergies);
+		
 
 		// PatientObj.setDoctorId(doctorId);
 		try {
@@ -66,10 +78,10 @@ public class PatientResource {
 			if (file != null) {
 				byte[] bytes = IOUtils.toByteArray(file );
 				
-				PatientObj.setFile(bytes);
+				patient.setFile(bytes);
 				System.out.println("file size is " +bytes.length);
 			}
-			em.persist(PatientObj);
+			em.persist(patient);
 			utx.commit();
 
 		} catch (Exception e) {
@@ -93,7 +105,7 @@ public class PatientResource {
 
 		// Save the file
 
-		return Response.ok(PatientObj.toString()).build();
+		return Response.ok(patient).build();
 	}
 
 	@GET
@@ -105,7 +117,6 @@ public class PatientResource {
 					Patient.class).getResultList();
 			// TODO use JSON util like Gson to render objects and use REST
 			// Response Writer
-			String json = "{\"id\":\"all\", \"body\":" + patients.toString() + "}";
 			return patients;
 		}
 		try {

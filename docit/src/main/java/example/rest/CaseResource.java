@@ -3,6 +3,8 @@ package example.rest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -42,14 +44,18 @@ public class CaseResource {
 	@POST
 	@Path("/add")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addCase(@FormDataParam("doctorId") Long doctorId,
 			@FormDataParam("patientId") Long patientId,
 			@FormDataParam("caseDesc") String caseDesc,
 			@FormDataParam("caseName") String caseName,
 			
 			@FormDataParam("file1") InputStream file1,
+			@FormDataParam("sharefile1") String sharefile1,
 			@FormDataParam("file2") InputStream file2,
-			@FormDataParam("file3") InputStream file3) throws IOException {
+			@FormDataParam("sharefile2") String sharefile2,
+			@FormDataParam("file3") InputStream file3,
+			@FormDataParam("sharefile3") String sharefile3) throws IOException {
 		if(patientId!=null)
 		{
 		Case caseObj = new Case();
@@ -66,7 +72,11 @@ public class CaseResource {
 			byte[] bytes = IOUtils.toByteArray(file1 );
 			caseFile1=new CaseFile();
 			caseFile1.setFileContent(bytes);
-			System.out.println("file size is " +bytes.length);
+			if("true".equalsIgnoreCase(sharefile1) || "yes".equalsIgnoreCase(sharefile1)) {
+				caseFile1.setShare(true);	
+			} else {
+				caseFile1.setShare(false);
+			}
 		}
 		
 		CaseFile caseFile2 = null;
@@ -74,7 +84,11 @@ public class CaseResource {
 			byte[] bytes = IOUtils.toByteArray(file2 );
 			caseFile2=new CaseFile();
 			caseFile2.setFileContent(bytes);
-			System.out.println("file size is " +bytes.length);
+			if("true".equalsIgnoreCase(sharefile2) || "yes".equalsIgnoreCase(sharefile2)) {
+				caseFile2.setShare(true);	
+			} else {
+				caseFile2.setShare(false);
+			}
 		}
 		
 	
@@ -84,7 +98,11 @@ public class CaseResource {
 			byte[] bytes = IOUtils.toByteArray(file3 );
 			caseFile3=new CaseFile();
 			caseFile3.setFileContent(bytes);
-			System.out.println("file size is " +bytes.length);
+			if("true".equalsIgnoreCase(sharefile3) || "yes".equalsIgnoreCase(sharefile3)) {
+				caseFile3.setShare(true);	
+			} else {
+				caseFile3.setShare(false);
+			}
 		}
 
 		try {
@@ -96,21 +114,18 @@ public class CaseResource {
 
 			if(caseFile1 != null) {
 				utx.begin();
-				System.out.println("caseId" + caseObj.getId());
 				caseFile1.setCaseId(caseObj.getId());
 				em.persist(caseFile1);
 				utx.commit();
 			}
 			if(caseFile2 != null) {
 				utx.begin();
-				System.out.println("caseId" + caseObj.getId());
 				caseFile2.setCaseId(caseObj.getId());
 				em.persist(caseFile2);
 				utx.commit();
 			}
 			if(caseFile3 != null) {
 				utx.begin();
-				System.out.println("caseId" + caseObj.getId());
 				caseFile3.setCaseId(caseObj.getId());
 				em.persist(caseFile3);
 				utx.commit();
@@ -140,7 +155,7 @@ public class CaseResource {
 
 		// Save the file
 
-		return Response.ok(caseObj.toString()).build();
+		return Response.ok(caseObj).build();
 	}
 	else
 	return Response.status(javax.ws.rs.core.Response.Status.ACCEPTED).build();
@@ -153,7 +168,7 @@ public class CaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 public Object updateCase(@FormDataParam("docComments") String docComments,
 				@FormDataParam("patientComments") String patientComments,
-				@FormDataParam("caseID") Long caseId, @FormDataParam("status") String status)
+				@FormDataParam("caseID") Long caseId, @FormDataParam("status") String status, @FormDataParam("appointmentDate") String appointmentDate)
 	{
 		try
 	{	Case caseo = null;
@@ -174,6 +189,13 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			if(status != null && !"".equals(status))
 			{
 				caseo.setCaseStatus(status);
+			}
+			 SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
+			 
+			 try {
+				 caseo.setAppointmentDate(format.parse(appointmentDate));
+			} catch (ParseException e1) {
+				
 			}
 			caseo.setCaseUpdationTS(new Date());
 			em.merge(caseo);
@@ -203,14 +225,18 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 @GET
 	@Path("/caseFileIds")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Object getCaseFileIds(@QueryParam("caseId") Long caseId) {
+	public Object getCaseFileIds(@QueryParam("caseId") Long caseId, @QueryParam("showall") String showAll) {
 
 		List<Long> caseFileIds = null;
 		try {
 			utx.begin();
-
 			
-			String queryString = "SELECT t.id FROM CaseFile t where t.caseId = " + caseId;
+			String queryString = "SELECT t.id FROM CaseFile t where ";
+					if (!"true".equalsIgnoreCase(showAll)) {
+						queryString+= "t.share ='1' and ";
+					}
+					
+					queryString+= "t.caseId = " + caseId;
 			TypedQuery<Long> typedQuery =em.createQuery(queryString, Long.class);
 						caseFileIds = typedQuery.getResultList();
 			utx.commit();
@@ -293,7 +319,7 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			@QueryParam("status") String status) {
 		List<Case> cases = null;
 		if (caseId == null && caseName == null && doctorId == null && patientId ==null && status == null) {
-			cases = em.createQuery("SELECT t FROM Case t", Case.class)
+			cases = em.createQuery("SELECT t FROM Case t order by t.id desc", Case.class)
 					.getResultList();
 			return cases;
 		}
@@ -345,7 +371,7 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 				}
 				paramAppended = true;
 			}
-
+			queryString += "order by t.id desc";
 			cases = em.createQuery(queryString, Case.class).getResultList();
 			utx.commit();
 		} catch (Exception e) {

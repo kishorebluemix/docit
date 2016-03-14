@@ -1,5 +1,6 @@
 package example.jpa;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -26,6 +27,10 @@ public class CaseFile {
 	@Column( name = "FILE" )
 	private byte[] fileContent;
 	
+	@Basic
+	@Column(name = "SHARE")
+	private Boolean share;
+	
 	public long getId() {
 		return id;
 	}
@@ -49,6 +54,14 @@ public class CaseFile {
 
 	public void setFileContent(byte[] fileContent) {
 		this.fileContent = fileContent;
+	}
+
+	public Boolean getShare() {
+		return share;
+	}
+
+	public void setShare(Boolean share) {
+		this.share = share;
 	}
 	
 }

@@ -36,9 +36,15 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 		@Column(name = "DOC_DOB")
 		private Date docDOB;
 		
+		@Basic
+		@Column(name = "LAT")
+		private String lattitude;
 		
+		@Basic
+		@Column(name = "LONG")
+		private String longitude;
 		
-		
+				
 		@Basic
 		@Column(name = "DOC_CLINIC_ADDRESS")
 		private String docClinicAddress;
@@ -238,6 +244,30 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 		public void setDocHighlights(String docHighlights) {
 			this.docHighlights = docHighlights;
+		}
+
+
+
+		public String getLattitude() {
+			return lattitude;
+		}
+
+
+
+		public void setLattitude(String lattitude) {
+			this.lattitude = lattitude;
+		}
+
+
+
+		public String getLongitude() {
+			return longitude;
+		}
+
+
+
+		public void setLongitude(String longitude) {
+			this.longitude = longitude;
 		}
 	}
 
