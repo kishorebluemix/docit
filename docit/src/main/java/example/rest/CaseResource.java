@@ -371,7 +371,7 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 				}
 				paramAppended = true;
 			}
-			queryString += "order by t.id desc";
+			queryString += " order by t.id desc";
 			cases = em.createQuery(queryString, Case.class).getResultList();
 			utx.commit();
 		} catch (Exception e) {
