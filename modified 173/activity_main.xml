@@ -1,0 +1,152 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <ViewFlipper
+        android:id="@+id/view_flipper"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img1"
+                android:contentDescription="@string/app_name" />
+
+            <!-- <TextView
+                style="@style/ImageTitle"
+                android:text="doctor1" /> -->
+
+            
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img2"
+                android:contentDescription="@string/app_name" />
+
+           <!--  <TextView
+                style="@style/ImageTitle"
+                android:text="doctor2" /> -->
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img3" 
+                android:contentDescription="@string/app_name" />
+
+           <!--  <TextView
+                style="@style/ImageTitle"
+                android:text="doctor3" /> -->
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img4" 
+                android:contentDescription="@string/app_name" />
+
+          <!--   <TextView
+                style="@style/ImageTitle"
+                android:text="doctor4" /> -->
+        </RelativeLayout>
+    </ViewFlipper>
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+     <Button
+         android:id="@+id/register"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:layout_marginBottom="10dp"
+		 android:layout_marginLeft="10dp"
+		 android:layout_marginRight="10dp"
+         style="@style/CKButton"
+         android:text="Register" 
+    
+    />
+
+     <Button
+         android:id="@+id/login"
+         style="@style/CKButton"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/register"
+         android:layout_marginBottom="10dp"
+		 android:layout_marginLeft="10dp"
+		 android:layout_marginRight="10dp"
+         android:text="Login" 
+         
+     />
+           
+    </RelativeLayout>
+ 
+<!-- 	<LinearLayout
+        style="@style/ButtonContainer"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@android:drawable/ic_media_play" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_media_pause" />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/swipe_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/swip_left" 
+                android:contentDescription="@string/app_name" />
+
+    <ImageView
+        android:id="@+id/swipe_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/swipe_right" 
+                android:contentDescription="@string/app_name" /> -->
+
+</RelativeLayout>
