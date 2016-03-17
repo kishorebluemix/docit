@@ -192,7 +192,7 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			{
 				caseo.setCaseStatus(status);
 			}
-			if(rating != null && !"".equals(rating))
+			if(rating != null)
 			{
 				caseo.setRating(rating);
 			}
