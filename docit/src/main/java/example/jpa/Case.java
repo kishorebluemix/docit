@@ -71,6 +71,19 @@ public class Case {
 	@Column(name = "APPOINTMENT_DT")
 	private Date appointmentDate;
 	
+	@Basic
+	@Column(name = "RATING")
+	private Long rating;
+
+	public Long getRating() {
+		return rating;
+	}
+
+	public void setRating(Long rating) {
+		this.rating = rating;
+	}
+	
+	
 
 	public long getId() {
 		return id;
