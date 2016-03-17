@@ -168,7 +168,9 @@ public class CaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 public Object updateCase(@FormDataParam("docComments") String docComments,
 				@FormDataParam("patientComments") String patientComments,
-				@FormDataParam("caseID") Long caseId, @FormDataParam("status") String status, @FormDataParam("appointmentDate") String appointmentDate)
+				@FormDataParam("caseID") Long caseId, @FormDataParam("status") String status,
+				@FormDataParam("appointmentDate") String appointmentDate,
+				@FormDataParam("rating") Long rating)
 	{
 		try
 	{	Case caseo = null;
@@ -189,6 +191,10 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			if(status != null && !"".equals(status))
 			{
 				caseo.setCaseStatus(status);
+			}
+			if(rating != null && !"".equals(rating))
+			{
+				caseo.setRating(rating);
 			}
 			 SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
 			 
