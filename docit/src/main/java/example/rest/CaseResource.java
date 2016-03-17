@@ -196,12 +196,14 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			{
 				caseo.setRating(rating);
 			}
+			if (appointmentDate != null){
 			 SimpleDateFormat format = new SimpleDateFormat("dd-mm-yyyy");
-			 
-			 try {
-				 caseo.setAppointmentDate(format.parse(appointmentDate));
-			} catch (ParseException e1) {
-				
+				 
+				 try {
+					 caseo.setAppointmentDate(format.parse(appointmentDate));
+				} catch (Exception e1) {
+					
+				}
 			}
 			caseo.setCaseUpdationTS(new Date());
 			em.merge(caseo);
@@ -325,7 +327,7 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			@QueryParam("status") String status,
 			@QueryParam("order") String order) {
 		if (order == null || "".equals(order))		{
-			order = desc;
+			order = "desc";
 		}
 		List<Case> cases = null;
 		if (caseId == null && caseName == null && doctorId == null && patientId ==null && status == null) {
