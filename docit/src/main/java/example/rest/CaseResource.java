@@ -316,10 +316,14 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 			@QueryParam("caseName") String caseName,
 			@QueryParam("doctorId") Long doctorId,
 			@QueryParam("patientId") Long patientId,
-			@QueryParam("status") String status) {
+			@QueryParam("status") String status,
+			@QueryParam("order") String order) {
+		if (order == null || "".equals(order))		{
+			order = desc;
+		}
 		List<Case> cases = null;
 		if (caseId == null && caseName == null && doctorId == null && patientId ==null && status == null) {
-			cases = em.createQuery("SELECT t FROM Case t order by t.id desc", Case.class)
+			cases = em.createQuery("SELECT t FROM Case t order by t.id " + order, Case.class)
 					.getResultList();
 			return cases;
 		}
@@ -371,7 +375,7 @@ public Object updateCase(@FormDataParam("docComments") String docComments,
 				}
 				paramAppended = true;
 			}
-			queryString += " order by t.id desc";
+			queryString += " order by t.id " + order;
 			cases = em.createQuery(queryString, Case.class).getResultList();
 			utx.commit();
 		} catch (Exception e) {
